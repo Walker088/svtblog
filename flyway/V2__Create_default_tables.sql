@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
     totp_secret TEXT NOT NULL,
     profile_bio TEXT,
     profile_img TEXT,
+    cv_path     TEXT,
     created_at  TIMESTAMP WITHOUT TIME ZONE DEFAULT (NOW() AT TIME ZONE 'UTC'),
     updated_at  TIMESTAMP WITHOUT TIME ZONE
 );
@@ -19,39 +20,39 @@ CREATE TABLE IF NOT EXISTS series (
 );
 
 DO $$ BEGIN
-    CREATE TYPE articale_status AS ENUM ('PT', 'DR', 'DL');
+    CREATE TYPE article_status AS ENUM ('PT', 'DR', 'DL');
 EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;
 
-CREATE TABLE IF NOT EXISTS articales (
-    articale_id VARCHAR(9) PRIMARY KEY,
-    articale_title TEXT,
-    articale_sub_title TEXT,
-    articale_serie VARCHAR(5),
-    articale_img TEXT,
-    articale_status articale_status, -- DL: Deleted, PT: Posted, DR: Draft
+CREATE TABLE IF NOT EXISTS articles (
+    article_id VARCHAR(9) PRIMARY KEY,
+    article_title TEXT,
+    article_sub_title TEXT,
+    article_serie VARCHAR(5),
+    article_img TEXT,
+    article_status article_status, -- DL: Deleted, PT: Posted, DR: Draft
     created_at  TIMESTAMP WITHOUT TIME ZONE DEFAULT (NOW() AT TIME ZONE 'UTC'),
     created_by TEXT,
     updated_at  TIMESTAMP WITHOUT TIME ZONE,
     updated_by TEXT,
-    CONSTRAINT fk_articale_serie FOREIGN KEY(articale_serie) REFERENCES series(serie_id),
+    CONSTRAINT fk_article_serie FOREIGN KEY(article_serie) REFERENCES series(serie_id),
     CONSTRAINT fk_created_by FOREIGN KEY(created_by) REFERENCES users(user_id),
     CONSTRAINT fk_updated_by FOREIGN KEY(updated_by) REFERENCES users(user_id)
 );
 
 DO $$ BEGIN
-    CREATE TYPE articale_langs AS ENUM ('en', 'es', 'zh');
+    CREATE TYPE article_langs AS ENUM ('en', 'es', 'zh');
 EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;
 
-CREATE TABLE IF NOT EXISTS articale_contents (
-    articale_id VARCHAR(9),
-    lang articale_langs,
-    content TEXT,
-    PRIMARY KEY (articale_id, lang),
-    CONSTRAINT fk_articale_id FOREIGN KEY(articale_id) REFERENCES articales(articale_id)
+CREATE TABLE IF NOT EXISTS article_contents (
+    article_id VARCHAR(9),
+    article_lang article_langs,
+    article_content TEXT,
+    PRIMARY KEY (article_id, article_lang),
+    CONSTRAINT fk_article_id FOREIGN KEY(article_id) REFERENCES articles(article_id)
 );
 
 CREATE TABLE IF NOT EXISTS tags (
@@ -60,10 +61,10 @@ CREATE TABLE IF NOT EXISTS tags (
     PRIMARY KEY (tag_id)
 );
 
-CREATE TABLE IF NOT EXISTS articale_tags (
-    articale_id VARCHAR(9),
+CREATE TABLE IF NOT EXISTS article_tags (
+    article_id VARCHAR(9),
     tag_id VARCHAR(5),
-    PRIMARY KEY (articale_id, tag_id),
-    CONSTRAINT fk_articale_id FOREIGN KEY(articale_id) REFERENCES articales(articale_id),
+    PRIMARY KEY (article_id, tag_id),
+    CONSTRAINT fk_article_id FOREIGN KEY(article_id) REFERENCES articles(article_id),
     CONSTRAINT fk_tag_id FOREIGN KEY(tag_id) REFERENCES tags(tag_id)
 );

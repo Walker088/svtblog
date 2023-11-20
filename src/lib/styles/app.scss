@@ -1,0 +1,20 @@
+//$DEFAULT-BG-COLOR: #2B2A32;
+$DEFAULT-TEXT-COLOR: white;
+$DEFAULT-LINK-COLOR: #00c2c2;
+
+@use "$lib/styles/fonts-roboto";
+@use "bootstrap/scss/bootstrap" as bs5;
+
+body {
+    background-color: bs5.$body-secondary-bg-dark;
+    color: $DEFAULT-TEXT-COLOR;
+    font-family: 'Roboto', sans-serif, serif;
+
+    header {
+        background-color: bs5.$body-bg-dark;
+    }
+
+    a {
+        color: $DEFAULT-LINK-COLOR;
+    }
+}

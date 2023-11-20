@@ -2,15 +2,19 @@
 import type { Locales } from '$lib/i18n/i18n-types';
 import type { LayoutServerLoad } from './$types';
 
-type MainLayoutInfo = {
+interface MainLayoutInfo {
     locale: Locales,
+    cvPath: string,
+    profileImg: string,
+    userId: string;
+    userMail: string;
 };
 
-export const load: LayoutServerLoad<MainLayoutInfo> = async ({ locals: { locale } }) => {
+export const load: LayoutServerLoad<MainLayoutInfo> = async ({ locals }) => {
     return {
-        //userId: locals?.User?.userId,
-        locale: locale,
-        userId: "walker088",
+        locale: locals.locale,
         cvPath: "/pdf/cv-2022Sep04.pdf",
+        profileImg: "",
+        ...locals.User
     };
-}
+};
